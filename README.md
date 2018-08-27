@@ -51,10 +51,16 @@ vim /etc/nginx/nginx.conf
         location / {
         include      uwsgi_params;
         uwsgi_pass   127.0.0.1:5000;  # 指向 uwsgi 所应用的内部地址,所有请求将转发给 uwsgi 处理
-        uwsgi_param UWSGI_PYHOME /root/flask/venv; # 指向虚拟环境目录
-        uwsgi_param UWSGI_CHDIR  /root/flask; # 指向网站根目录
-        uwsgi_param UWSGI_SCRIPT app:app; # 指定启动程序
+        uwsgi_param  UWSGI_PYHOME /root/flask/venv; # 指向虚拟环境目录
+        uwsgi_param  UWSGI_CHDIR  /root/flask; # 指向网站根目录
+        uwsgi_param  UWSGI_SCRIPT app:app; # 指定启动程序
         }
+```
+
+找到 http{} 字段并添加以下内容
+
+```
+    client_max_body_size 20m; #20M为允许的文件大小
 ```
 
 # 建立配置文件 uwsgi.ini
