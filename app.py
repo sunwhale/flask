@@ -10,6 +10,8 @@ from werkzeug import secure_filename
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
+# app.config['ENCODING'] = 'gbk'
+app.config['ENCODING'] = 'utf-8'
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/static/uploads'
 app.config['ABAQUS_INPUT_FOLDER'] = os.getcwd() + '/static/abaqus_input/'
 app.config['IMG_FOLDER'] = os.getcwd() + '/static/img/'
@@ -74,9 +76,9 @@ def furniture():
         for filename in filename_list:
             url = '/static/uploads/furniture' + '/' + filename
             url_thumb = '/static/uploads/furniture_thumbnail' + '/' + filename
-            data_list.append({  'file':unicode(filename,'gbk'),
-                                'url':unicode(url,'gbk'),
-                                'url_thumb':unicode(url_thumb,'gbk'),
+            data_list.append({  'file':unicode(filename,app.config['ENCODING']),
+                                'url':unicode(url,app.config['ENCODING']),
+                                'url_thumb':unicode(url_thumb,app.config['ENCODING']),
                                 'modify_time':get_FileModifyTime(os.path.join(app.config['FURNITURE_FOLDER'],filename))
                             })
         return data_list
@@ -105,9 +107,9 @@ def template():
         for filename in filename_list:
             url = '/static/uploads/template' + '/' + filename
             url_thumb = '/static/uploads/template_thumbnail' + '/' + filename
-            data_list.append({  'file':unicode(filename,'gbk'),
-                                'url':unicode(url,'gbk'),
-                                'url_thumb':unicode(url_thumb,'gbk'),
+            data_list.append({  'file':unicode(filename,app.config['ENCODING']),
+                                'url':unicode(url,app.config['ENCODING']),
+                                'url_thumb':unicode(url_thumb,app.config['ENCODING']),
                                 'modify_time':get_FileModifyTime(os.path.join(app.config['TEMPLATE_FOLDER'],filename))
                             })
         return data_list
