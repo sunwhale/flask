@@ -1,0 +1,54 @@
+{% extends 'layout.html' %}
+{% block body %}
+
+<div class="container">
+	<div class="row clearfix">
+		<div class="col-md-12 column">
+			<h3 class="sub-header">家具图片</h3>
+			<form role="form" class="form-inline" method="POST" enctype="multipart/form-data">
+				<div class="form-group">
+					{# <label for="photo">请选择要上传的文件</label> #}
+					<input type="file" multiple="multiple" id="photo" name="photo"/>
+					<p class="help-block">
+						文件后缀.jpg
+					</p>
+				</div>
+				<button type="submit" class="btn btn-default">开始上传</button>
+			</form>
+
+			<h3 class="sub-header">家具图片列表</h3>
+			<div class="table-responsive">
+				<table class="table table-striped">
+					<thead>
+						<tr>
+							<th>
+								图片名称
+							</th>
+							<th style="text-align:center">
+								缩略图
+							</th>
+							<th style="text-align:center">
+								修改时间
+							</th>
+							<th style="text-align:center">
+								操作
+							</th>
+						</tr>
+					</thead>
+					<tbody>
+						{% for data in data_list %}
+						<tr>
+							<td>{{ data["file"] }}</td>
+							<td style="text-align:center"><p><img class="img-responsive center-block" src="{{ data["url_thumb"] }}" /></p></td>
+							<td style="text-align:center">{{ data["modify_time"] }}</td>
+							<td style="text-align:center"><a href="{{ data["url"]  }}">查看</a> <a href="{{ url_for('furniture_delete_file', filename=data["file"]) }}">删除</a></td>
+						</tr>
+						{% endfor %}
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
