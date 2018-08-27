@@ -18,7 +18,7 @@ function submit_query(btn){
 }
 $(document).ready(function (){
 	if ({{progress_done}}){
-	$("#demo").text("完成");
+	$("#demo").text("");
 	$("#filename").attr("href", "{{ url_for('abaqus_input', filename=filename) }}");
 	$("#filename").text("下载网格文件：" + "{{filename}}");
 	$("#prog_in").width("100%");
@@ -30,13 +30,8 @@ $(document).ready(function (){
 <div class="container">
 	<div class="row clearfix">
 		<div class="col-md-12 column">
-			<p class="text-center">
-				 <em>Git</em> 是一个分布式的版本控制系统，最初由 <strong>Linus Torvalds</strong> 编写，用作Linux内核代码的管理。在推出后，Git在其它项目中也取得了很大成功，尤其是在 <small>Ruby</small> 社区中。
-			</p>
-		</div>
-	</div>
-	<div class="row clearfix">
-		<div class="col-md-6 column">
+			<h3 class="sub-header">螺纹网格生成</h3>
+			<p>1. 进入<a href="furniture">内螺纹</a>和<a href="template">外螺纹</a>分别生成内螺纹和外螺纹网格。</p>
 			<form class="form-horizontal" role="form" method="POST">
 				<div class="form-group">
 					 <label for="d" class="col-sm-2 control-label">d =</label>
@@ -82,19 +77,13 @@ $(document).ready(function (){
 				</div>
 				<div class="form-group">
 					<div class="col-sm-offset-2 col-sm-10">
-						<div class="checkbox">
-							 <label><input type="checkbox" />Remember me</label>
-						</div>
-					</div>
-				</div>
-				<div class="form-group">
-					<div class="col-sm-offset-2 col-sm-10">
 						 <button type="submit" class="btn btn-default" onclick="submit_query()">开始生成</button>
 					</div>
 				</div>
 			</form>
 
-			<p id="demo"></p>
+			<p class="text-center" id="demo"></p>
+			<p class="text-center" id="demo"><a id="filename" href=""></a></p>
 
 			<div id="prog_out" class="progress progress-striped active">
 				<div id="prog_in" class="progress-bar progress-bar-success" role="progressbar"
@@ -104,11 +93,6 @@ $(document).ready(function (){
 				</div>
 			</div>
 
-			<a id="filename" href=""></a>
-
-		</div>
-		<div class="col-md-6 column">
-			<img alt="140x140" src="static/img/thread.jpg" class="img-thumbnail" />
 		</div>
 	</div>
 </div>

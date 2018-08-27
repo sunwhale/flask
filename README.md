@@ -31,9 +31,13 @@ pip install virtualenv
 # 进入网站根目录，配置虚拟环境
 
 cd flask
+
 virtualenv venv
+
 source venv/bin/activate
+
 pip install -r requirements.txt
+
 deactivate
 
 # 编辑默认的 Nginx 配置文件
@@ -60,7 +64,7 @@ vim /etc/nginx/nginx.conf
 找到 http{} 字段并添加以下内容
 
 ```
-    client_max_body_size 20m; #20M为允许的文件大小
+    client_max_body_size 20m; # 20M为允许的文件大小
 ```
 
 # 建立配置文件 uwsgi.ini

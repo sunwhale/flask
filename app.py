@@ -150,7 +150,7 @@ def abaqus_input(filename):
 
 @app.route('/thread', methods=['GET', 'POST'])
 def thread():
-    from thread_external_MJ import thread_external_MJ
+    from models.thread_external_MJ import thread_external_MJ
     if request.method == 'POST':
         d = float(request.form["d"])
         P = float(request.form["P"])
