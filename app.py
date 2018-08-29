@@ -19,8 +19,8 @@ from flask_login import logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
-app.config['ENCODING'] = 'gbk'
-# app.config['ENCODING'] = 'utf-8'
+# app.config['ENCODING'] = 'gbk'
+app.config['ENCODING'] = 'utf-8'
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/static/uploads'
 app.config['DOWNLOAD_FOLDER'] = os.getcwd() + '/static/download'
 app.config['ABAQUS_INPUT_FOLDER'] = os.getcwd() + '/static/abaqus_input/'

@@ -102,9 +102,17 @@ daemonize = /root/flask/uwsgi_httpServer.log
 disable-logging = true
 ```
 
-# 启动 uwsgi
+# 启动、停止和升级 uwsgi
 
+```
 uwsgi --ini uwsgi.ini
+
+uwsgi uwsgi.ini --deamonize # 后台运行启动
+ 
+uwsgi --stop uwsgi.pid  # 停止服务
+ 
+uwsgi --reload uwsgi.pid  # 可以无缝重启服务
+```
 
 # 安装 supervisor 监测 uwsgi 运行状态
 
@@ -123,3 +131,4 @@ autorestart = true
 stdout_logfile = /root/flask/supervisor_flask.log # 运行日志
 stderr_logfile = /root/flask/supervisor_flask_err.log # 错误日志
 ```
+
