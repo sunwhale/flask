@@ -80,6 +80,7 @@ $(document).ready(function (){
 						 <button type="submit" class="btn btn-default" onclick="submit_query()">开始生成</button>
 					</div>
 				</div>
+				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			</form>
 
 			<p class="text-center" id="demo"></p>

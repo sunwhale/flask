@@ -67,6 +67,7 @@ def certification_file(filename):
                                filename)
 
 @app.route('/certification', methods=['GET', 'POST'])
+@login_required
 def certification():
     if request.method == 'POST':
         import pandas as pd
@@ -91,6 +92,7 @@ def certification():
     return render_template('certification.html', file_url='#', data=[])
 
 @app.route('/furniture', methods=['GET', 'POST'])
+@login_required
 def furniture():
     from models.thumbnail import thumbnail
     from models.furniture import get_FileModifyTime
@@ -122,6 +124,7 @@ def furniture():
     return render_template('furniture.html', data_list=data_list)
 
 @app.route('/template', methods=['GET', 'POST'])
+@login_required
 def template():
     from models.thumbnail import thumbnail
     from models.furniture import get_FileModifyTime
