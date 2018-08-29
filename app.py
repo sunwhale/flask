@@ -3,6 +3,7 @@
 import os
 import json
 import time
+from math import isnan
 
 from models import Database
 from models import global_var
@@ -18,15 +19,17 @@ from flask_login import logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
-# app.config['ENCODING'] = 'gbk'
-app.config['ENCODING'] = 'utf-8'
+app.config['ENCODING'] = 'gbk'
+# app.config['ENCODING'] = 'utf-8'
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/static/uploads'
+app.config['DOWNLOAD_FOLDER'] = os.getcwd() + '/static/download'
 app.config['ABAQUS_INPUT_FOLDER'] = os.getcwd() + '/static/abaqus_input/'
-app.config['IMG_FOLDER'] = os.getcwd() + '/static/img/'
+app.config['IMG_FOLDER'] = os.getcwd() + '/static/img'
 app.config['FURNITURE_FOLDER'] = os.getcwd() + '/static/uploads/furniture'
 app.config['FURNITURE_THUMBNAIL_FOLDER'] = os.getcwd() + '/static/uploads/furniture_thumbnail'
 app.config['TEMPLATE_FOLDER'] = os.getcwd() + '/static/uploads/template'
 app.config['TEMPLATE_THUMBNAIL_FOLDER'] = os.getcwd() + '/static/uploads/template_thumbnail'
+app.config['CERTIFICATION_FOLDER'] = os.getcwd() + '/static/certification'
 
 global_var.progress_percent = 0
 
@@ -63,7 +66,12 @@ def uploaded_file(filename):
 
 @app.route('/certification_file/<filename>')
 def certification_file(filename):
-    return send_from_directory(app.config['IMG_FOLDER'],
+    return send_from_directory(app.config['CERTIFICATION_FOLDER'],
+                               filename)
+
+@app.route('/download/<filename>')
+def download(filename):
+    return send_from_directory(app.config['DOWNLOAD_FOLDER'],
                                filename)
 
 @app.route('/certification', methods=['GET', 'POST'])
@@ -81,15 +89,22 @@ def certification():
             data = df.to_dict(orient='records')
             for d in data:
                 certification_name = certification( img_folder=app.config['IMG_FOLDER'],
+                                                    certification_folder=app.config['CERTIFICATION_FOLDER'],
                                                     number=d[u'编号'],
                                                     qrcode_text=d[u'二维码信息'],
                                                     name=d[u'产品名称'],
                                                     furniture_filename=app.config['FURNITURE_FOLDER'] + '/' + d[u'家具图片'],
                                                     template_filename=app.config['TEMPLATE_FOLDER'] + '/' + d[u'模板图片'] )
                 d['url'] = url_for('certification_file', filename=certification_name)
-            return render_template('certification.html', file_url=file_url, data=data)
+                if not isnan(d[u'二维码信息']):
+                    d[u'二维码信息'] = d[u'二维码信息'].replace("\n","<br/>")
+                else:
+                    d[u'二维码信息'] = ''
+            from models.zipdown import zipdown
+            zip_done = zipdown(app.config['CERTIFICATION_FOLDER'], os.path.join(app.config['DOWNLOAD_FOLDER'], 'certification.zip'))
+            return render_template('certification.html', file_url=file_url, data=data, zip_done=zip_done)
 
-    return render_template('certification.html', file_url='#', data=[])
+    return render_template('certification.html', data=[])
 
 @app.route('/furniture', methods=['GET', 'POST'])
 @login_required
@@ -170,6 +185,13 @@ def template_delete_file(filename):
     thumbnail_fullname = os.path.join(app.config['TEMPLATE_THUMBNAIL_FOLDER'],filename)
     os.remove(thumbnail_fullname)
     return redirect(url_for('template'))
+
+@app.route('/clear_certification')
+def clear_certification():
+    for root, dirs, files in os.walk(app.config['CERTIFICATION_FOLDER']):
+        for name in files:
+            os.remove(os.path.join(root, name))
+    return redirect(url_for('certification'))
 
 @app.route('/static/abaqus_input/<filename>')
 def abaqus_input(filename):

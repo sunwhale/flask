@@ -2,6 +2,7 @@
 
 import qrcode
 import os
+from math import isnan
 from PIL import Image,ImageFont,ImageDraw
 
 def gen_qrcode(string, path, logo=""):
@@ -46,24 +47,26 @@ def gen_qrcode(string, path, logo=""):
         
     img.save(path)
 
-def certification(  img_folder='..//static//img//',
+def certification(  img_folder='..//static//img',
+                    certification_folder='..//static//certification',
                     number='0',
                     qrcode_text='',
                     name=u'产品名称',
                     furniture_filename='',
                     template_filename=''  ):
     img_folder = img_folder
+    certification_folder = certification_folder
     number = number
     template_filename = template_filename
-    qrcode_logo = img_folder + 'logo.jpg'
+    qrcode_logo = os.path.join(img_folder,'logo.jpg')
     furniture_filename = furniture_filename
 
     # 打开模板文件
     img = Image.open(template_filename)
     
     # 放置二维码图片
-    if qrcode_text <> '':
-        qrcode_filename = img_folder + 'qrcode.png'
+    if not isnan(qrcode_text):
+        qrcode_filename = os.path.join(img_folder,'qrcode.png')
         gen_qrcode(qrcode_text,qrcode_filename,qrcode_logo)
         img_qrcode = Image.open(qrcode_filename)
         box_qrcode = (0, 0, img_qrcode.width, img_qrcode.height)
@@ -81,9 +84,9 @@ def certification(  img_folder='..//static//img//',
         zoom_ration = max(width_ratio,height_ratio)
         newWidth = int(img_furniture.width/zoom_ration)
         newHeight = int(img_furniture.height/zoom_ration)
-    elif img_furniture.width < 2000 or img_furniture.height < 1500:
-        width_ratio = img_furniture.width/2000.0
-        height_ratio = img_furniture.height/1500.0
+    elif img_furniture.width < 2800 or img_furniture.height < 2000:
+        width_ratio = img_furniture.width/2800.0
+        height_ratio = img_furniture.height/2000.0
         zoom_ration = max(width_ratio,height_ratio)
         newWidth = int(img_furniture.width/zoom_ration)
         newHeight = int(img_furniture.height/zoom_ration)
@@ -126,7 +129,7 @@ def certification(  img_folder='..//static//img//',
             draw.text((x+i,y+j),text,(0,0,0),font=font)
 
     filename = 'certification_' + number + '.jpg'
-    img.save(img_folder + filename)
+    img.save(os.path.join(certification_folder, filename))
 
     # img.show()
 

@@ -20,8 +20,14 @@
 				<button type="submit" class="btn btn-default">开始上传</button>
 				<input type="hidden" name="csrf_token" value="{{ csrf_token() }}" />
 			</form>
-			{# <a id="excelfile" href="{{ file_url }}">Excel文件</a> #}
-
+			<p><a href="{{ url_for('clear_certification') }}">删除全部证书文件</a> 
+				{% if clear_done %}
+			-->证书文件已经全部删除
+				{% endif %}
+			</p>
+			{% if zip_done %}
+			<p><a href="{{ url_for('download', filename="certification.zip") }}">下载全部证书文件</a></p>
+			{% endif %}
 			<table class="table">
 				<thead>
 					<tr>
@@ -51,7 +57,7 @@
 						<td>{{ d['编号'] }}</td>
 						<td>{{ d['产品名称'] }}</td>
 						{% autoescape false %}
-						<td>{{ d['二维码信息'].replace("\n","<br/>") }}</td>
+						<td>{{ d['二维码信息'] }}</td>
 						{% endautoescape %}
 						<td>{{ d['家具图片'] }}</td>
 						<td>{{ d['模板图片'] }}</td>
