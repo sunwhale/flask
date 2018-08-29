@@ -224,8 +224,8 @@ def login():
         user = User(user_name)
         if user.verify_password(password):
             login_user(user, remember=remember_me)
-            return redirect(url_for('index'))
-            # return redirect(request.args.get('next') or url_for('index'))
+            # return redirect(url_for('index'))
+            return redirect(request.args.get('next') or url_for('index'))
         else:
             flash(u'用户名或密码错误', 'message')
             return render_template('login.html', form=form)
