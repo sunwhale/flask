@@ -58,27 +58,38 @@ def certification(  img_folder='..//static//img//',
     qrcode_logo = img_folder + 'logo.jpg'
     furniture_filename = furniture_filename
 
-    qrcode_text = qrcode_text
-    qrcode_filename = img_folder + 'qrcode.png'
-    gen_qrcode(qrcode_text,qrcode_filename,qrcode_logo)
-
+    # 打开模板文件
     img = Image.open(template_filename)
-    img_qrcode = Image.open(qrcode_filename)
+    
+    # 放置二维码图片
+    if qrcode_text <> '':
+        qrcode_filename = img_folder + 'qrcode.png'
+        gen_qrcode(qrcode_text,qrcode_filename,qrcode_logo)
+        img_qrcode = Image.open(qrcode_filename)
+        box_qrcode = (0, 0, img_qrcode.width, img_qrcode.height)
+        region_qrcode = img_qrcode.crop(box_qrcode)
+        x = 3780
+        y = 260
+        box_qrcode = (x, y, x+img_qrcode.width, y+img_qrcode.height)
+        img.paste(img_qrcode, box_qrcode)
+
+    # 放置家具图片
     img_furniture = Image.open(furniture_filename)
-
-    box_qrcode = (0, 0, img_qrcode.width, img_qrcode.height)
-    region_qrcode = img_qrcode.crop(box_qrcode)
-    x = 3780
-    y = 260
-    box_qrcode = (x, y, x+img_qrcode.width, y+img_qrcode.height)
-    img.paste(img_qrcode, box_qrcode)
-
     if img_furniture.width > 2900 or img_furniture.height > 2100:
         width_ratio = img_furniture.width/2900.0
         height_ratio = img_furniture.height/2100.0
         zoom_ration = max(width_ratio,height_ratio)
         newWidth = int(img_furniture.width/zoom_ration)
         newHeight = int(img_furniture.height/zoom_ration)
+    elif img_furniture.width < 2000 or img_furniture.height < 1500:
+        width_ratio = img_furniture.width/2000.0
+        height_ratio = img_furniture.height/1500.0
+        zoom_ration = max(width_ratio,height_ratio)
+        newWidth = int(img_furniture.width/zoom_ration)
+        newHeight = int(img_furniture.height/zoom_ration)
+    else:
+        newWidth = img_furniture.width
+        newHeight = img_furniture.height
 
     img_furniture = img_furniture.resize((newWidth,newHeight),Image.ANTIALIAS)
     box_furniture = (0, 0, img_furniture.width, img_furniture.height)

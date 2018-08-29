@@ -1,12 +1,20 @@
 # -*- coding: utf-8 -*-
+
 import os
 import json
 import time
 
 from models import Database
 from models import global_var
-from flask import Flask, render_template, redirect, url_for, request, send_from_directory
+from flask import Flask, render_template, redirect, url_for, request, send_from_directory, flash
 from werkzeug import secure_filename
+
+from models.forms import LoginForm
+from flask_wtf.csrf import CSRFProtect
+from models.User import User
+from flask_login import login_user, login_required
+from flask_login import LoginManager, current_user
+from flask_login import logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
@@ -21,6 +29,22 @@ app.config['TEMPLATE_FOLDER'] = os.getcwd() + '/static/uploads/template'
 app.config['TEMPLATE_THUMBNAIL_FOLDER'] = os.getcwd() + '/static/uploads/template_thumbnail'
 
 global_var.progress_percent = 0
+
+app.secret_key = os.urandom(24)
+# use login manager to manage session
+login_manager = LoginManager()
+login_manager.session_protection = 'strong'
+login_manager.login_view = 'login'
+login_manager.init_app(app=app)
+
+# 这个callback函数用于reload User object，根据session中存储的user id
+@login_manager.user_loader
+def load_user(user_id):
+    return User.get(user_id)
+
+# csrf protection
+csrf = CSRFProtect()
+csrf.init_app(app)
 
 @app.route('/show_progress')
 def show_progress():
@@ -149,6 +173,7 @@ def abaqus_input(filename):
     return send_from_directory(app.config['ABAQUS_INPUT_FOLDER'], filename)
 
 @app.route('/thread', methods=['GET', 'POST'])
+@login_required
 def thread():
     from models.thread_external_MJ import thread_external_MJ
     if request.method == 'POST':
@@ -163,6 +188,29 @@ def thread():
         if is_done:
             return render_template('thread.html', progress_done = "true", filename = filename)
     return render_template('thread.html', progress_done = "false")
+
+@app.route('/login', methods=['GET', 'POST'])
+def login():
+    form = LoginForm()
+    if form.validate_on_submit():
+        user_name = request.form.get('username', None)
+        password = request.form.get('password', None)
+        remember_me = request.form.get('remember_me', False)
+        user = User(user_name)
+        if user.verify_password(password):
+            login_user(user, remember=remember_me)
+            return redirect(url_for('index'))
+            # return redirect(request.args.get('next') or url_for('index'))
+        else:
+            flash(u'用户名或密码错误', 'message')
+            return render_template('login.html', form=form)
+    return render_template('login.html', form=form)
+
+@app.route('/logout')
+@login_required
+def logout():
+    logout_user()
+    return redirect(url_for('index'))
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
