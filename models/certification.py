@@ -2,6 +2,7 @@
 
 import qrcode
 import os
+import numpy as np
 from math import isnan
 from PIL import Image,ImageFont,ImageDraw
 
@@ -65,10 +66,12 @@ def certification(  img_folder='..//static//img',
     try:
         img = Image.open(template_filename)
     except:
-        return '失败.jpg'
+        return '失败.jpg', u'模板文件错误'
     
     # 放置二维码图片
-    if not isnan(qrcode_text):
+    try:
+        isnan(qrcode_text)
+    except:
         qrcode_filename = os.path.join(img_folder,'qrcode.png')
         gen_qrcode(qrcode_text,qrcode_filename,qrcode_logo)
         img_qrcode = Image.open(qrcode_filename)
@@ -83,8 +86,8 @@ def certification(  img_folder='..//static//img',
     try:
         img_furniture = Image.open(furniture_filename)
     except:
-        return '失败.jpg'
-        
+        return '失败.jpg', u'家具图片错误'
+
     if img_furniture.width > 2900 or img_furniture.height > 2100:
         width_ratio = img_furniture.width/2900.0
         height_ratio = img_furniture.height/2100.0
@@ -112,11 +115,15 @@ def certification(  img_folder='..//static//img',
 
     font = ImageFont.truetype('simsun.ttc',120)
     text = name
-    x = 1598
+    x = 1520
     y = 1998
     for i in [0,1,2]:
         for j in [0,1,2]:
             draw.text((x+i,y+j),text,(0,0,0),font=font)
+
+    # 生成证书中的横线，其中gbk的编码是是为了区分全角和半角字符的长度，中文长度为2，英文和数字长度为1。
+    for i in range(6):
+        draw.line(((1420,2118+i),(1420+len(name.encode('gbk'))*60+200,2118+i)),fill=0)
 
     font=ImageFont.truetype('simsun.ttc',120)
     text = number
@@ -139,7 +146,14 @@ def certification(  img_folder='..//static//img',
 
     # img.show()
 
-    return filename
+    return filename, u'完成'
 
 if __name__ == "__main__":
-    certification()
+    filename, status = certification(  img_folder='F:\\GitHub\\flask\\static\\img\\',
+                    certification_folder='F:\\GitHub\\flask\\static\\certification\\',
+                    number='0',
+                    qrcode_text=np.nan,
+                    name=u'产品名称',
+                    furniture_filename='F:\\GitHub\\flask\\static\\uploads\\furniture\\book.jpg',
+                    template_filename='F:\\GitHub\\flask\\static\\uploads\\template\\2019.jpg'  )
+    print filename, status

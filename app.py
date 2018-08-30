@@ -19,8 +19,8 @@ from flask_login import logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
-# app.config['ENCODING'] = 'gbk'
-app.config['ENCODING'] = 'utf-8'
+app.config['ENCODING'] = 'gbk'
+# app.config['ENCODING'] = 'utf-8'
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/static/uploads'
 app.config['DOWNLOAD_FOLDER'] = os.getcwd() + '/static/download'
 app.config['ABAQUS_INPUT_FOLDER'] = os.getcwd() + '/static/abaqus_input/'
@@ -90,7 +90,7 @@ def certification():
             global_var.progress_percent = 0
             for d in data:
                 global_var.progress_percent += 1
-                certification_name = certification( img_folder=app.config['IMG_FOLDER'],
+                certification_name, d['status'] = certification( img_folder=app.config['IMG_FOLDER'],
                                                     certification_folder=app.config['CERTIFICATION_FOLDER'],
                                                     number=d[u'编号'],
                                                     qrcode_text=d[u'二维码信息'],

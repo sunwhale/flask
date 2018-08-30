@@ -48,6 +48,9 @@
 							模板图片
 						</th>
 						<th>
+							状态
+						</th>
+						<th>
 							证书下载
 						</th>
 					</tr>
@@ -62,6 +65,7 @@
 						{% endautoescape %}
 						<td>{{ d['家具图片'] }}</td>
 						<td>{{ d['模板图片'] }}</td>
+						<td>{{ d['status'] }}</td>
 						<td><a href="{{ d['url'] }}">下载</a></td>
 					</tr>
 					{% endfor %}
