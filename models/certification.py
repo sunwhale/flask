@@ -62,7 +62,10 @@ def certification(  img_folder='..//static//img',
     furniture_filename = furniture_filename
 
     # 打开模板文件
-    img = Image.open(template_filename)
+    try:
+        img = Image.open(template_filename)
+    except:
+        return '失败.jpg'
     
     # 放置二维码图片
     if not isnan(qrcode_text):
@@ -77,7 +80,11 @@ def certification(  img_folder='..//static//img',
         img.paste(img_qrcode, box_qrcode)
 
     # 放置家具图片
-    img_furniture = Image.open(furniture_filename)
+    try:
+        img_furniture = Image.open(furniture_filename)
+    except:
+        return '失败.jpg'
+        
     if img_furniture.width > 2900 or img_furniture.height > 2100:
         width_ratio = img_furniture.width/2900.0
         height_ratio = img_furniture.height/2100.0
@@ -93,7 +100,6 @@ def certification(  img_folder='..//static//img',
     else:
         newWidth = img_furniture.width
         newHeight = img_furniture.height
-
     img_furniture = img_furniture.resize((newWidth,newHeight),Image.ANTIALIAS)
     box_furniture = (0, 0, img_furniture.width, img_furniture.height)
     region_furniture = img_furniture.crop(box_furniture)

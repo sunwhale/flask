@@ -87,7 +87,9 @@ def certification():
             file_url = url_for('uploaded_file', filename=filename)
             df = pd.read_excel(app.config['UPLOAD_FOLDER'] + '/' + filename)           
             data = df.to_dict(orient='records')
+            global_var.progress_percent = 0
             for d in data:
+                global_var.progress_percent += 1
                 certification_name = certification( img_folder=app.config['IMG_FOLDER'],
                                                     certification_folder=app.config['CERTIFICATION_FOLDER'],
                                                     number=d[u'编号'],

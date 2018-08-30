@@ -104,7 +104,6 @@ disable-logging = true
 
 # 启动、停止和升级 uwsgi
 
-```
 uwsgi --ini uwsgi.ini
 
 uwsgi uwsgi.ini --deamonize # 后台运行启动
@@ -112,7 +111,7 @@ uwsgi uwsgi.ini --deamonize # 后台运行启动
 uwsgi --stop uwsgi.pid  # 停止服务
  
 uwsgi --reload uwsgi.pid  # 可以无缝重启服务
-```
+
 
 # 安装 supervisor 监测 uwsgi 运行状态
 
@@ -132,3 +131,17 @@ stdout_logfile = /root/flask/supervisor_flask.log # 运行日志
 stderr_logfile = /root/flask/supervisor_flask_err.log # 错误日志
 ```
 
+# 在后台处理大量数据时 uwsgi 会产生错误，修改配置文件 uwsgi.ini，添加以下内容
+
+```
+harakiri = 1200
+uwsgi_send_timeout = 600
+```
+
+同时修改 nginx 配置文件 uwsgi_params，添加以下内容
+
+```
+uwsgi_connect_timeout 600;
+uwsgi_read_timeout    600;
+uwsgi_send_timeout    600;
+```
