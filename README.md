@@ -1,28 +1,38 @@
 # flask
 
-图片生成过程中需要字体文件“simsun.ttc”，下载地址 https://github.com/sonatype/maven-guide-zh/raw/master/content-zh/src/main/resources/fonts/simsun.ttc
-
 # 服务器版本 CentOS 7.4
 
 # 安装 Nginx Web 服务器
 
-yum install nginx
+yum -y install nginx
 
 systemctl start nginx
 
+# 安装 pip
+
+yum -y install epel-release
+
+yum -y install python-pip
+
 # 安装 uWSGI
 
-yum install python-devel
+yum -y install python-devel
+
+yum -y install gcc # 如果提示 Exception: you need a C compiler to build uWSGI
 
 pip install uwsgi
 
 # 安装 git
 
-yum install git
+yum -y install git
 
 # 下载网站源文件
 
 git clone https://github.com/sunwhale/flask.git
+
+图片生成过程中需要字体文件“simsun.ttc”，下载到flask根目录下
+
+wget https://github.com/sonatype/maven-guide-zh/raw/master/content-zh/src/main/resources/fonts/simsun.ttc
 
 # 在这里我们可以使用虚拟环境VirtualEnv，官方文档 https://virtualenv.readthedocs.org/en/latest/
 
@@ -64,7 +74,7 @@ vim /etc/nginx/nginx.conf
 找到 http{} 字段并添加以下内容
 
 ```
-    client_max_body_size 20m; # 20M为允许的文件大小
+    client_max_body_size 200m; # 200M为允许的文件大小，如果一次上传多个文件，则计算全部文件的大小，而不是单个文件的大小
 ```
 
 # 建立配置文件 uwsgi.ini
@@ -136,6 +146,8 @@ stderr_logfile = /root/flask/supervisor_flask_err.log # 错误日志
 ```
 harakiri = 1200
 uwsgi_send_timeout = 600
+worker-reload-mercy = 600
+max-requests = 5000
 ```
 
 同时修改 nginx 配置文件 uwsgi_params，添加以下内容
@@ -145,3 +157,18 @@ uwsgi_connect_timeout 600;
 uwsgi_read_timeout    600;
 uwsgi_send_timeout    600;
 ```
+
+# CentOS 7 防火墙状态
+
+参考https://www.cnblogs.com/moxiaoan/p/5683743.html
+
+systemctl status firewalld
+
+# 关闭 SELinux，SELinux 会导致 nginx 和 uwsgi 无法通信
+
+参考https://www.linuxidc.com/Linux/2016-11/137723.htm
+
+getenforce
+
+setenforce 0
+

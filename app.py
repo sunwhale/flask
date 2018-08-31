@@ -19,8 +19,8 @@ from flask_login import logout_user
 
 app = Flask(__name__)
 app.config['SECRET_KEY'] = 'I have a dream'
-app.config['ENCODING'] = 'gbk'
-# app.config['ENCODING'] = 'utf-8'
+# app.config['ENCODING'] = 'gbk'
+app.config['ENCODING'] = 'utf-8'
 app.config['UPLOAD_FOLDER'] = os.getcwd() + '/static/uploads'
 app.config['DOWNLOAD_FOLDER'] = os.getcwd() + '/static/download'
 app.config['ABAQUS_INPUT_FOLDER'] = os.getcwd() + '/static/abaqus_input/'
@@ -98,10 +98,11 @@ def certification():
                                                     furniture_filename=app.config['FURNITURE_FOLDER'] + '/' + d[u'家具图片'],
                                                     template_filename=app.config['TEMPLATE_FOLDER'] + '/' + d[u'模板图片'] )
                 d['url'] = url_for('certification_file', filename=certification_name)
-                if not isnan(d[u'二维码信息']):
-                    d[u'二维码信息'] = d[u'二维码信息'].replace("\n","<br/>")
-                else:
+                try:
+                    isnan(qrcode_text)
                     d[u'二维码信息'] = ''
+                except:
+                    d[u'二维码信息'] = d[u'二维码信息'].replace("\n","<br/>")
             from models.zipdown import zipdown
             zip_done = zipdown(app.config['CERTIFICATION_FOLDER'], os.path.join(app.config['DOWNLOAD_FOLDER'], 'certification.zip'))
             return render_template('certification.html', file_url=file_url, data=data, zip_done=zip_done)
