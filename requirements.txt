@@ -30,7 +30,7 @@ python-linux-procfs==0.4.9
 pytz==2018.5
 pyudev==0.15
 pyxattr==0.5.1
-PyYAML==3.12
+PyYAML==5.4
 qrcode==6.0
 requests==2.18.4
 schedutils==0.4
