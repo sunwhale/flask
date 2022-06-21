@@ -15,7 +15,7 @@ jsonpatch==1.16
 jsonpointer==1.12
 Markdown==2.6.9
 MarkupSafe==1.0
-numpy==1.15.1
+numpy==1.22.0
 oauth==1.0.1
 pandas==0.23.4
 perf==0.1
